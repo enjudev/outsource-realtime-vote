@@ -20,10 +20,10 @@
 </head>
 
 <body class="bg-[#ebebeb]">
-    <section>
-        <div class="container mx-auto">
+    <section class="py-[100px] lg:py-[40px]">
+        <div class="container mx-auto px-[15px] lg:px-0">
             <h1 class="text-[60px] text-center font-[500]">{{ $model->name }}</h1>
-            <div class="optionContainer grid grid-cols-6 mt-10 gap-[30px]"></div>
+            <div class="optionContainer grid grid-cols-1 lg:grid-cols-6 mt-10 gap-[30px]"></div>
         </div>
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
@@ -53,11 +53,40 @@
         // Set up the event listener for changes in the database
         database.on("value", function(snapshot) {
             $('.optionContainer').empty();
-            $.each(snapshot.val().options, function(key, value) {
-                $('.optionContainer').append(
-                    `<div data-key="${key}" class="bg-white rounded-lg overflow-hidden"><img class="aspect-square object-cover" src="${value.avatar}" alt=""><h1 class="text-center mt-2">${value.name}</h1><p class="mt-2 text-center">Vote ${value.vote}</p><div class="py-2 mt-3 text-center bg-blue-400 cursor-pointer text-white submitVote">Vote Button</div></div>`
-                );
-            });
+            if (snapshot.val().status == 0) {
+                $.each(snapshot.val().options, function(key, value) {
+                    $('.optionContainer').append(
+                        `<div data-key="${key}"
+                    class="bg-white flex flex-row lg:flex-col items-center lg:items-center gap-[20px] lg:gap-0 rounded-lg overflow-hidden w-full">
+                    <img class="aspect-square object-cover w-[100px] lg:w-full"
+                        src="${value.avatar}" alt="">
+                    <h1 class="text-center mt-2">${value.name}</h1>
+                    <p class="mt-2 text-center ml-auto lg:ml-0 text-sm">${value.vote} Bình chọn</p>
+                    <div
+                        class="px-[20px] w-auto lg:w-full lg:px-0 mr-[15px] lg:mr-0 py-2 mt-3 text-center bg-gray-400 cursor-pointer text-white">
+                        Vote
+                    </div>
+                </div>`
+                    );
+                });
+            }
+            if (snapshot.val().status == 1) {
+                $.each(snapshot.val().options, function(key, value) {
+                    $('.optionContainer').append(
+                        `                <div data-key="${key}"
+                    class="bg-white flex flex-row lg:flex-col items-center lg:items-center gap-[20px] lg:gap-0 rounded-lg overflow-hidden w-full">
+                    <img class="aspect-square object-cover w-[100px] lg:w-full"
+                        src="${value.avatar}" alt="">
+                    <h1 class="text-center mt-2">${value.name}</h1>
+                    <p class="mt-2 text-center ml-auto lg:ml-0 text-sm">${value.vote} Bình chọn</p>
+                    <div
+                        class="px-[20px] w-auto lg:w-full lg:px-0 mr-[15px] lg:mr-0 py-2 mt-3 text-center bg-blue-400 cursor-pointer text-white submitVote">
+                        Vote
+                    </div>
+                </div>`
+                    );
+                });
+            }
         });
         $(document).on('click', '.submitVote', function() {
             var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;

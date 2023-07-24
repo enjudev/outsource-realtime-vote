@@ -30,7 +30,8 @@ class RoomController extends Controller
             $model->uuid = Str::uuid();
             $model->save();
             $roomRef = $this->firebase->getReference('room' . $model->uuid);
-            $roomRef->set(['uuid' => $model->uuid]);
+            $roomRef->getChild('uuid')->set($model->uuid);
+            $roomRef->getChild('status')->set(0);
             return redirect(route('room.index'))->with('success');
         } catch (\Throwable $th) {
             dd($th);
@@ -63,6 +64,20 @@ class RoomController extends Controller
         $roomId = $request->roomId;
         $option = $this->firebase->getReference('room' . $roomId . '/options' . '/' . $request->key);
         $option->remove();
+        return response()->json(['message' => 'success']);
+    }
+    public function startVote(Request $request)
+    {
+        $roomId = $request->roomId;
+        $room = $this->firebase->getReference('room' . $roomId);
+        $room->getChild('status')->set(1);
+        return response()->json(['message' => 'success']);
+    }
+    public function disableVote(Request $request)
+    {
+        $roomId = $request->roomId;
+        $room = $this->firebase->getReference('room' . $roomId);
+        $room->getChild('status')->set(0);
         return response()->json(['message' => 'success']);
     }
     ///

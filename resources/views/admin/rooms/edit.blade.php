@@ -54,6 +54,13 @@
             </div>
             @if (isset($model))
                 <div class="col-md-9">
+                    <div class="flex items-center gap-5 justify-center">
+                        <button type="button" class="disableVote cursor-pointer bg-red-600 px-5 py-3 text-white">Disable
+                            Vote</button>
+                        <button type="button" class="startVote cursor-pointer bg-green-600 px-5 py-3 text-white">Start
+                            Vote</button>
+                    </div>
+                    <h1 class="status text-red-400 text-center mt-5 mb-5">Session vote chưa được bắt đầu</h1>
                     <div class="flex gap-[30px] items-center">
                         <img src="{{ asset('theme/admin/empty_img.png') }}"
                             class="ckfinderUploadImage cursor-pointer w-[100px]" alt=".." />
@@ -160,6 +167,34 @@
                     _token: token,
                     roomId: roomId,
                     key: key
+                }
+            })
+        })
+        $(document).on('click', '.startVote', function() {
+            var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
+            var token = $('meta[name="csrf-token"]').attr('content');
+            $('.status').css('color', 'green');
+            $('.status').text('Đang trong quá trình vote');
+            $.ajax({
+                url: `{{ route('room.startVote') }}`,
+                method: `POST`,
+                data: {
+                    _token: token,
+                    roomId: roomId,
+                }
+            })
+        })
+        $(document).on('click', '.disableVote', function() {
+            var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
+            var token = $('meta[name="csrf-token"]').attr('content');
+            $('.status').css('color', 'red');
+            $('.status').text('Session vote chưa được bắt đầu');
+            $.ajax({
+                url: `{{ route('room.disableVote') }}`,
+                method: `POST`,
+                data: {
+                    _token: token,
+                    roomId: roomId,
                 }
             })
         })

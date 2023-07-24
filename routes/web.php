@@ -97,6 +97,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'web'
         Route::resource('/room', '\App\Http\Controllers\Admin\Room\RoomController');
         Route::post('/room/add-option', '\App\Http\Controllers\Admin\Room\RoomController@addOption')->name('room.addOption');
         Route::post('/room/remove-option', '\App\Http\Controllers\Admin\Room\RoomController@removeOption')->name('room.removeOption');
+        Route::post('/room/start-vote', '\App\Http\Controllers\Admin\Room\RoomController@startVote')->name('room.startVote');
+        Route::post('/room/disable-vote', '\App\Http\Controllers\Admin\Room\RoomController@disableVote')->name('room.disableVote');
     });
 });
 
