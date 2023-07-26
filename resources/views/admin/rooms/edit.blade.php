@@ -59,15 +59,35 @@
                             Vote</button>
                         <button type="button" class="startVote cursor-pointer bg-green-600 px-5 py-3 text-white">Start
                             Vote</button>
-                        <button type="button" class="resetRound cursor-pointer bg-orange-600 px-5 py-3 text-white">Reset
+                        <button type="button" class="resetRound cursor-pointer bg-orange-600 px-5 py-3 text-white"
+                            style="background-color: orange">Reset
                             Round</button>
                     </div>
                     <h1 class="status text-red-400 text-center mt-5 mb-5"></h1>
-                    <div class="flex gap-[30px] items-center">
-                        <img src="{{ asset('theme/admin/empty_img.png') }}"
-                            class="ckfinderUploadImage cursor-pointer w-[100px]" alt=".." />
-                        <input type="text" class="name w-full py-2 px-4 focus-visible:outline-none"
-                            placeholder="Tên người được bình chọn">
+                    <div class="bg-white p-[15px] rounded-lg">
+                        <div class="flex gap-[30px] items-start">
+                            <img src="{{ asset('theme/admin/empty_img.png') }}"
+                                class="ckfinderUploadImage avatar cursor-pointer w-[200px]" alt=".." />
+                            <div class="flex-1 flex flex-col gap-2">
+                                <input type="text" class="form-control name w-full py-2 px-4 focus-visible:outline-none"
+                                    placeholder="Tên người được bình chọn">
+                                <input type="text" class="form-control sbd w-full py-2 px-4 focus-visible:outline-none"
+                                    placeholder="Số báo danh">
+                                <input type="text"
+                                    class="form-control address w-full py-2 px-4 focus-visible:outline-none"
+                                    placeholder="Quê Quán">
+                                <input type="text"
+                                    class="form-control department w-full py-2 px-4 focus-visible:outline-none"
+                                    placeholder="Phòng ban">
+                                <input type="text"
+                                    class="form-control height w-full py-2 px-4 focus-visible:outline-none"
+                                    placeholder="Chiều cao">
+                                <input type="text" class="form-control hobby w-full py-2 px-4 focus-visible:outline-none"
+                                    placeholder="Sở thích">
+                                <input type="text" class="form-control set w-full py-2 px-4 focus-visible:outline-none"
+                                    placeholder="Tiết mục">
+                            </div>
+                        </div>
                         <button type="button"
                             class="addOption w-[100px] bg-blue-500 h-full py-[6px] text-white">Add</button>
                     </div>
@@ -149,9 +169,14 @@
         $('.addOption').on('click', function() {
             var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
             var token = $('meta[name="csrf-token"]').attr('content');
-            var name = $(this).prev().val();
-            var avatar = $(this).prev().prev().attr('src');
-            console.log(avatar);
+            var name = $(this).prev().find('.name').val();
+            var sbd = $(this).prev().find('.sbd').val();
+            var address = $(this).prev().find('.address').val();
+            var department = $(this).prev().find('.department').val();
+            var height = $(this).prev().find('.height').val();
+            var hobby = $(this).prev().find('.hobby').val();
+            var set = $(this).prev().find('.set').val();
+            var avatar = $(this).prev().find('.avatar').attr('src');
             $.ajax({
                 url: `{{ route('room.addOption') }}`,
                 method: `POST`,
@@ -159,6 +184,12 @@
                     _token: token,
                     roomId: roomId,
                     name: name,
+                    sbd: sbd,
+                    address: address,
+                    department: department,
+                    height: height,
+                    hobby: hobby,
+                    set: set,
                     avatar: avatar
                 }
             })

@@ -114,6 +114,7 @@ Route::group(['namespace' => 'Admin', 'wheres' => 'App\Model\User'],  function (
 
 
 Route::get('/room/{id}', '\App\Http\Controllers\Frontend\HomeController@index')->name('room.view');
+Route::get('/room/{id}/vote', '\App\Http\Controllers\Frontend\HomeController@score')->name('room.vote');
 Route::post('/room/submit-vote', '\App\Http\Controllers\Frontend\HomeController@submitVote')->name('room.submitVote');
 Route::get('/error', function () {
     return view('admin.errors.404');

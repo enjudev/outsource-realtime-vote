@@ -68,6 +68,12 @@ class RoomController extends Controller
         $roomRef = $this->firebase->getReference('room' . $roomId . '/options');
         $userData = [
             'name' => $request->name,
+            'sbd' => $request->sbd,
+            'address' => $request->address,
+            'department' => $request->department,
+            'height' => $request->height,
+            'hobby' => $request->hobby,
+            'set' => $request->set,
             'vote' => 0,
             'avatar' => $request->avatar
         ];

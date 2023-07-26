@@ -16,10 +16,16 @@ class HomeController extends Controller
     public function submitVote(Request $request)
     {
         $roomId = $request->roomId;
+        $room = Room::where('uuid', $roomId)->first();
         foreach ($request->vote as $vote) {
             $option = $this->firebase->getReference('room' . $roomId . '/options' . '/' . $vote);
             $option->getChild('vote')->set($option->getChild('vote')->getValue() + 1);
         }
-        return response()->json(['success' => 'success']);
+        return response()->json(['url' => route('room.view', $room->id)]);
+    }
+    public function score($id)
+    {
+        $model = Room::where('id', $id)->first();
+        return view('frontend.vote', compact('model'));
     }
 }
