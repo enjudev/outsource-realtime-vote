@@ -8,16 +8,18 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index($uuid)
+    public function index($id)
     {
-        $model = Room::where('uuid', $uuid)->first();
+        $model = Room::where('id', $id)->first();
         return view('frontend.room', compact('model'));
     }
     public function submitVote(Request $request)
     {
         $roomId = $request->roomId;
-        $option = $this->firebase->getReference('room' . $roomId . '/options' . '/' . $request->key);
-        $option->getChild('vote')->set($option->getChild('vote')->getValue() + 1);
+        foreach ($request->vote as $vote) {
+            $option = $this->firebase->getReference('room' . $roomId . '/options' . '/' . $vote);
+            $option->getChild('vote')->set($option->getChild('vote')->getValue() + 1);
+        }
         return response()->json(['success' => 'success']);
     }
 }

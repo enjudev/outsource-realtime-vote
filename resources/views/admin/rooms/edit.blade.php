@@ -43,7 +43,7 @@
                         <div class="form-group">
                             <label for="title">Url</label>
                             <input type="text" name="url"
-                                value="{{ isset($model) ? route('room.view', $model->uuid) : '' }}" class="form-control"
+                                value="{{ isset($model) ? route('room.view', $model->id) : '' }}" class="form-control"
                                 id="url" placeholder="url" disabled>
                         </div>
                     </div>
@@ -59,8 +59,10 @@
                             Vote</button>
                         <button type="button" class="startVote cursor-pointer bg-green-600 px-5 py-3 text-white">Start
                             Vote</button>
+                        <button type="button" class="resetRound cursor-pointer bg-orange-600 px-5 py-3 text-white">Reset
+                            Round</button>
                     </div>
-                    <h1 class="status text-red-400 text-center mt-5 mb-5">Session vote chưa được bắt đầu</h1>
+                    <h1 class="status text-red-400 text-center mt-5 mb-5"></h1>
                     <div class="flex gap-[30px] items-center">
                         <img src="{{ asset('theme/admin/empty_img.png') }}"
                             class="ckfinderUploadImage cursor-pointer w-[100px]" alt=".." />
@@ -69,7 +71,7 @@
                         <button type="button"
                             class="addOption w-[100px] bg-blue-500 h-full py-[6px] text-white">Add</button>
                     </div>
-                    <div class="mt-5 grid grid-cols-6 gap-[30px] optionContainer">
+                    <div class="mt-5 grid grid-cols-3 lg:grid-cols-6 gap-[30px] optionContainer">
                     </div>
                 </div>
             @endif
@@ -128,6 +130,13 @@
 
         // Set up the event listener for changes in the database
         database.on("value", function(snapshot) {
+            if (snapshot.val().status == 1) {
+                $('.status').css('color', 'green');
+                $('.status').text('Đang trong quá trình vote');
+            } else {
+                $('.status').css('color', 'red');
+                $('.status').text('Session vote chưa được bắt đầu');
+            }
             $('.optionContainer').empty();
             $.each(snapshot.val().options, function(key, value) {
                 $('.optionContainer').append(
@@ -191,6 +200,20 @@
             $('.status').text('Session vote chưa được bắt đầu');
             $.ajax({
                 url: `{{ route('room.disableVote') }}`,
+                method: `POST`,
+                data: {
+                    _token: token,
+                    roomId: roomId,
+                }
+            })
+        })
+        $(document).on('click', '.resetRound', function() {
+            var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
+            var token = $('meta[name="csrf-token"]').attr('content');
+            $('.status').css('color', 'red');
+            $('.status').text('Phiên vote đang được đặt lại');
+            $.ajax({
+                url: `{{ route('room.resetRound') }}`,
                 method: `POST`,
                 data: {
                     _token: token,

@@ -99,6 +99,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'web'
         Route::post('/room/remove-option', '\App\Http\Controllers\Admin\Room\RoomController@removeOption')->name('room.removeOption');
         Route::post('/room/start-vote', '\App\Http\Controllers\Admin\Room\RoomController@startVote')->name('room.startVote');
         Route::post('/room/disable-vote', '\App\Http\Controllers\Admin\Room\RoomController@disableVote')->name('room.disableVote');
+        Route::post('/room/reset-round', '\App\Http\Controllers\Admin\Room\RoomController@resetRound')->name('room.resetRound');
     });
 });
 
@@ -112,7 +113,7 @@ Route::group(['namespace' => 'Admin', 'wheres' => 'App\Model\User'],  function (
 });
 
 
-Route::get('/room/{uuid}', '\App\Http\Controllers\Frontend\HomeController@index')->name('room.view');
+Route::get('/room/{id}', '\App\Http\Controllers\Frontend\HomeController@index')->name('room.view');
 Route::post('/room/submit-vote', '\App\Http\Controllers\Frontend\HomeController@submitVote')->name('room.submitVote');
 Route::get('/error', function () {
     return view('admin.errors.404');
