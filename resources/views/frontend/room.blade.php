@@ -56,7 +56,7 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;">
-                Vòng 1: Bình chọn</h1>
+            </h1>
             <div>
                 <div class="optionContainer grid grid-cols-1 mt-6 gap-[16px] rounded-[8px]">
                 </div>

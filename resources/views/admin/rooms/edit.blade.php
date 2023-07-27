@@ -34,7 +34,7 @@
                     <div class="box-body">
                         <div class="form-group">
                             <label for="title">Tên</label>
-                            <input type="text" name="name" value="{{ isset($model) ? $model->name : '' }}"
+                            <input type="text" name="roomName" value="{{ isset($model) ? $model->name : '' }}"
                                 class="form-control" id="name" placeholder="Name">
                             @error('name')
                                 <p class="text-danger">{{ $message }}</p>
@@ -55,12 +55,12 @@
             @if (isset($model))
                 <div class="col-md-9">
                     <div class="flex items-center gap-5 justify-center">
-                        <button type="button" class="disableVote cursor-pointer bg-red-600 px-5 py-3 text-white">Disable
+                        <button type="button" class="disableVote cursor-pointer bg-orange-600 px-5 py-3 text-white">Disable
                             Vote</button>
                         <button type="button" class="startVote cursor-pointer bg-green-600 px-5 py-3 text-white">Start
                             Vote</button>
-                        <button type="button" class="resetRound cursor-pointer bg-orange-600 px-5 py-3 text-white"
-                            style="background-color: orange">Reset
+                        <button type="button" class="resetRound cursor-pointer bg-red-600 px-5 py-3 text-white"
+                            style="background-color: red">Reset
                             Round</button>
                     </div>
                     <h1 class="status text-red-400 text-center mt-5 mb-5"></h1>
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                         <button type="button"
-                            class="addOption w-[100px] bg-blue-500 h-full py-[6px] text-white">Add</button>
+                            class="addOption w-[100px] bg-blue-500 h-full py-[6px] text-white">Thêm</button>
                     </div>
                     <div class="mt-5 grid grid-cols-3 lg:grid-cols-6 gap-[30px] optionContainer">
                     </div>
@@ -160,7 +160,60 @@
             $('.optionContainer').empty();
             $.each(snapshot.val().options, function(key, value) {
                 $('.optionContainer').append(
-                    `<div class="relative bg-white p-3 rounded-lg" data-key="${key}"><img class="aspect-square object-cover" src="${value.avatar}" alt=""><h1 class="text-center mt-2">${value.name}</h1><p class="mt-2 text-center">${value.vote} Bình chọn</p><img class="removeOption cursor-pointer hover:scale-110 transition duration-150 absolute top-0 right-0 z-10 w-[30px] h-[30px]" src="{{ asset('theme/admin/close.svg') }}" alt=""></div>`
+                    `<div class="cursor-pointer relative bg-white p-3 rounded-lg" data-toggle="modal" data-target="#${key}" data-key="${key}"><img class="aspect-square object-cover" src="${value.avatar}" alt=""><h1 class="text-center mt-2">${value.name}</h1><p class="mt-2 text-center">${value.vote} Bình chọn</p><img class="cursor-pointer hover:scale-110 transition duration-150 absolute top-0 right-0 z-10 w-[30px] h-[30px]" src="{{ asset('theme/admin/close.svg') }}" alt=""></div>
+                    <div class="modal fade modalContainer" data-key="${key}" id="${key}" tabindex="-1" role="dialog" aria-labelledby="${key}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header flex item-center">
+                                <h5 class="modal-title" id="${key}">Chỉnh sửa</h5>
+                                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        <div class="modal-body modal-form">
+                            <img class="ckfinderUploadImage cursor-pointer w-2/3 avatar mx-auto h-[500px] object-cover" src="${value.avatar}" />
+                            <div class="grid grid-cols-2 gap-[10px] mt-5">
+                                <div>
+                                    <p class="text-base mb-1 text-black">Họ và tên</p>
+                                    <input name="name" class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.name}" />
+                                </div>
+                                <div>
+                                    <p class="text-base mb-1 text-black">Số báo danh</p>
+                                    <input name="sbd" class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.sbd}" />
+                                </div>
+                                <div>
+                                    <p class="text-base mb-1 text-black">Chiều cao</p>
+                                    <input name="height" class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.height}" />
+                                </div> 
+                                <div>
+                                    <p class="text-base mb-1 text-black">Địa chỉ</p>
+                                    <input name="address" class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.address}" />
+                                </div>  
+                                <div>
+                                    <p class="text-base mb-1 text-black">Phòng ban</p>
+                                    <input name="department" class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.department}" />
+                                </div>
+                                <div>
+                                    <p class="text-base mb-1 text-black">Sở thích</p>
+                                    <input name="hobby" class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.hobby}" />
+                                </div>
+                                <div>
+                                    <p class="text-base mb-1 text-black">Tiết mục</p>
+                                    <input name="set" class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.set}" />
+                                </div>  
+                                <div>
+                                    <p class="text-base mb-1 text-black">Tổng bình chọn</p>
+                                    <input name="vote" disabled class="px-4 w-full py-1 border-[1px] border-[#ebebeb]" value="${value.vote}" />
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="removeOption bg-red-400 text-white px-10 py-2" data-dismiss="modal">Xoá</button>
+                            <button type="button" class="updateOption ml-4 bg-green-500 text-white py-2 px-10">Lưu thay đổi</button>
+                        </div>
+                        </div>
+                    </div>
+                    </div>`
                 );
             });
         });
@@ -196,10 +249,35 @@
         })
     </script>
     <script>
+        $(document).on('click', '.updateOption', function() {
+            var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
+            var token = $('meta[name="csrf-token"]').attr('content');
+            var key = $(this).closest('.modalContainer').data('key');
+            var formBody = $(this).parent().prev();
+            $('.modal').modal('hide');
+            $.ajax({
+                url: `{{ route('room.updateOption') }}`,
+                method: `POST`,
+                data: {
+                    _token: token,
+                    roomId: roomId,
+                    key: key,
+                    name: formBody.find('input[name="name"]').val(),
+                    sbd: formBody.find('input[name="sbd"]').val(),
+                    address: formBody.find('input[name="address"]').val(),
+                    department: formBody.find('input[name="department"]').val(),
+                    height: formBody.find('input[name="height"]').val(),
+                    hobby: formBody.find('input[name="hobby"]').val(),
+                    set: formBody.find('input[name="set"]').val(),
+                    vote: formBody.find('input[name="vote"]').val(),
+                    avatar: formBody.find('.avatar').attr('src'),
+                }
+            })
+        })
         $(document).on('click', '.removeOption', function() {
             var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
             var token = $('meta[name="csrf-token"]').attr('content');
-            var key = $(this).parent().data('key');
+            var key = $(this).closest('.modalContainer').data('key');
             $.ajax({
                 url: `{{ route('room.removeOption') }}`,
                 method: `POST`,
@@ -239,18 +317,29 @@
             })
         })
         $(document).on('click', '.resetRound', function() {
-            var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
-            var token = $('meta[name="csrf-token"]').attr('content');
-            $('.status').css('color', 'red');
-            $('.status').text('Phiên vote đang được đặt lại');
-            $.ajax({
-                url: `{{ route('room.resetRound') }}`,
-                method: `POST`,
-                data: {
-                    _token: token,
-                    roomId: roomId,
-                }
-            })
+            swal({
+                    title: "Bạn có chắc chắn không?",
+                    text: "Sau khi khôi phục lại, bạn sẽ mất hết dữ liệu !!!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
+                        var token = $('meta[name="csrf-token"]').attr('content');
+                        $('.status').css('color', 'red');
+                        $('.status').text('Phiên vote đang được đặt lại');
+                        $.ajax({
+                            url: `{{ route('room.resetRound') }}`,
+                            method: `POST`,
+                            data: {
+                                _token: token,
+                                roomId: roomId,
+                            }
+                        })
+                    }
+                });
         })
     </script>
 @endsection

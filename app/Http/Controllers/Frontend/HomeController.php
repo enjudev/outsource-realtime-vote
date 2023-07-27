@@ -17,7 +17,8 @@ class HomeController extends Controller
     {
         $roomId = $request->roomId;
         $room = Room::where('uuid', $roomId)->first();
-        foreach ($request->vote as $vote) {
+        $votes[] = $request->vote;
+        foreach ($votes as $vote) {
             $option = $this->firebase->getReference('room' . $roomId . '/options' . '/' . $vote);
             $option->getChild('vote')->set($option->getChild('vote')->getValue() + 1);
         }

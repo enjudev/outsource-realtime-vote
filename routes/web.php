@@ -100,6 +100,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'web'
         Route::post('/room/start-vote', '\App\Http\Controllers\Admin\Room\RoomController@startVote')->name('room.startVote');
         Route::post('/room/disable-vote', '\App\Http\Controllers\Admin\Room\RoomController@disableVote')->name('room.disableVote');
         Route::post('/room/reset-round', '\App\Http\Controllers\Admin\Room\RoomController@resetRound')->name('room.resetRound');
+        Route::post('/room/update-option', '\App\Http\Controllers\Admin\Room\RoomController@updateOption')->name('room.updateOption');
     });
 });
 

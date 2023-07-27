@@ -20,6 +20,7 @@
 </head>
 
 <body class="bg-[#ebebeb] relative">
+    <input type="hidden" name="vote" id="">
     <div class="alertSuccess fixed left-0 top-0 h-screen w-full bg-black/40 z-20 items-center p-[15px]"
         style="display: none">
         <div class="w-full bg-white rounded-lg py-[28px] px-[20px]">
@@ -70,7 +71,7 @@
     </section>
     <div class="fixed bottom-0 z-10 w-full left-0 cursor-pointer submitVote"
         style="background: linear-gradient(10deg, #F6F6F6, #F8BB45,#BB8722,#FFFFFF,#FEFAF1);">
-        <h1 class="text-[24px] font-[600] text-white text-center py-[25px]">Gửi bình chọn</h1>
+        <h1 class="text-[24px] font-[600] text-white text-center py-[16px]">Gửi bình chọn</h1>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
@@ -132,7 +133,6 @@
                             <h1 class="text-base font-[700] text-white">${value.name}</h1>
                             <p class="font-[500] text-sm text-white">SBD: ${value.sbd}</p>
                         </div>
-                        <input type="hidden" class="voteInput" name="vote[]">
                         <div class="ml-auto w-[30px] h-[30px] mr-3 cursor-pointer">
                             <img class="object-contain w-full h-full addVote"
                             src="{{ asset('theme/frontend/untick.svg') }}" alt="">
@@ -178,15 +178,26 @@
         });
         $(document).on('click', '.addVote', function(e) {
             e.stopPropagation()
-            $(this).css('display', 'none');
-            $(this).next().css('display', 'block');
-            var key = $(this).closest('.card').data('key');
-            $(this).parent().prev().val(key);
+            element = $(this);
+            $('.addVote').each(function() {
+                $(this).css('display', 'block');
+            });
+            $('.removeVote').each(function() {
+                $(this).css('display', 'none');
+            });
+            element.css('display', 'none');
+            element.next().css('display', 'block');
+            var key = element.closest('.card').data('key');
+            $('input[name="vote"]').val(key);
         })
         $(document).on('click', '.removeVote', function(e) {
             e.stopPropagation()
-            $(this).css('display', 'none');
-            $(this).prev().css('display', 'block');
+            $('.removeVote').each(function() {
+                $(this).css('display', 'none');
+            });
+            $('.addVote').each(function() {
+                $(this).css('display', 'block');
+            });
         })
         $(document).on('click', '.closeAlert', function() {
             $(this).closest('.alertSuccess').css('display', 'none');
@@ -200,33 +211,29 @@
             var roomId = `{{ isset($model->uuid) ? $model->uuid : '' }}`;
             var token = $('meta[name="csrf-token"]').attr('content');
             var key = $(this).parent().data('key');
-            var votes = [];
-            $('input[name="vote[]"]').each(function() {
-                var vote = $(this).val().trim();
+            var vote = $('input[name="vote"]').val();
+            // $('input[name="vote[]"]').each(function() {
+            //     var vote = $(this).val().trim();
 
-                if (vote !== '') {
-                    votes.push(vote);
-                }
-            });
+            //     if (vote !== '') {
+            //         votes.push(vote);
+            //     }
+            // });
             localStorage.setItem('vote', true);
-            if (votes.length === 0) {
-                $('.alertError').css('display', 'flex');
-            } else {
-                $.ajax({
-                    url: `{{ route('room.submitVote') }}`,
-                    method: 'POST',
-                    data: {
-                        _token: token,
-                        roomId: roomId,
-                        key: key,
-                        vote: votes
-                    },
-                    success: function(response) {
-                        console.log(response.url);
-                        window.location.href = response.url;
-                    }
-                })
-            }
+            $.ajax({
+                url: `{{ route('room.submitVote') }}`,
+                method: 'POST',
+                data: {
+                    _token: token,
+                    roomId: roomId,
+                    key: key,
+                    vote: vote
+                },
+                success: function(response) {
+                    console.log(response.url);
+                    window.location.href = response.url;
+                }
+            })
 
         });
     </script>
