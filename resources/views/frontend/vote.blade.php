@@ -93,7 +93,21 @@
         firebase.initializeApp(firebaseConfig);
     </script>
     <script>
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // Page is shown from the back/forward cache, reload the page
+                window.location.reload();
+            }
+        });
         // Get a reference to the root of the database
+        var roomStatus = firebase.database().ref('room{{ isset($model->uuid) ? $model->uuid : '' }}/status');
+
+        roomStatus.on("value", function(snapshot) {
+            if (snapshot.val() != 1) {
+                window.location.href = `{{ route('room.view', $model->id) }}`;
+            }
+        })
+
         var database = firebase.database().ref('room{{ isset($model->uuid) ? $model->uuid : '' }}');
 
         // Set up the event listener for changes in the database
@@ -128,29 +142,32 @@
                     </div>
                 </div>    <div class="popupInfo fixed left-0 top-0 h-screen w-full bg-black/40 z-20 items-center p-[15px]"
         style="display: none">
-        <div class="w-full bg-white rounded-lg py-[28px] px-[20px] overflow-auto h-full">
-            <img class="mx-auto" src="${value.avatar}" alt="">
-            <h1 class="mt-4 text-base font-[600] text-start">
-                Tên: ${value.name}
-            </h1>
-            <p class="mt-4 text-sm font-[500] text-start">
-                SBD: ${value.sbd}
-            </p>
-            <p class="mt-4 text-sm font-[500] text-start">
-                Quê Quán: ${value.address}
-            </p>
-            <p class="mt-4 text-sm font-[500] text-start">
-                Phòng Ban: ${value.department}
-            </p>
-            <p class="mt-4 text-sm font-[500] text-start">
-                Chiều Cao: ${value.height}
-            </p>
-            <p class="mt-4 text-sm font-[500] text-start">
-                Sở Thích: ${value.hobby}
-            </p>
-            <p class="mt-4 text-sm font-[500] text-start">
-                Tiết Mục: ${value.set}
-            </p>
+        <div class="w-full rounded-lg bg-black py-[15px] px-[15px] border-[1px] border-white">
+            <img class="mx-auto object-cover w-full h-[320px]"
+                src="${value.avatar}" alt="">
+            <div class="grid grid-cols-2 gap-[10px]">
+                <h1 class="mt-3 text-[18px] text-white font-[700] text-start">
+                    ${value.name}
+                </h1>
+                <p class="mt-3 text-sm font-[500] text-start text-white">
+                    SBD: ${value.sbd}
+                </p>
+                <p class="mt-3 text-sm font-[500] text-start text-white">
+                    Quê Quán: ${value.address}
+                </p>
+                <p class="mt-3 text-sm font-[500] text-start text-white">
+                    Phòng Ban: ${value.department}
+                </p>
+                <p class="mt-3 text-sm font-[500] text-start text-white">
+                    Chiều Cao: ${value.height}
+                </p>
+                <p class="mt-3 text-sm font-[500] text-start text-white">
+                    Sở Thích: ${value.hobby}
+                </p>
+                <p class="mt-3 text-sm font-[500] text-start text-white">
+                    Tiết Mục: ${value.set}
+                </p>
+            </div>
             <button type="button" class="bg-[#3DBDFF] rounded-[8px] py-[9px] mt-5 w-full closeAlert">
                 <p class="text-white font-[700] text-base text-center">Quay lại bình chọn</p>
             </button>
@@ -158,155 +175,6 @@
     </div>`
                 );
             });
-            //         if (snapshot.val().status == 0) {
-            //             $.each(sortOptions, function(key, value) {
-            //                 $('.optionContainer').append(
-            //                     `<div data-key="${key}" class="card p-[1px] rounded-[8px] overflow-hidden"
-        //                 style="background: linear-gradient(10deg, #F6F6F6, #F8BB45,#BB8722,#FFFFFF,#FEFAF1);">
-        //                 <div class="flex items-center gap-2 bg-black p-[10px] rounded-[8px]">
-        //                     <img class="object-cover rounded-[8px] object-square w-[80px]"
-        //                         src="${value.avatar}" alt="">
-        //                     <div class="flex-1">
-        //                         <h1 class="text-base font-[700] text-white">${value.name}</h1>
-        //                         <p class="font-[500] text-sm text-white">SBD: ${value.sbd}</p>
-        //                         <p class="text-sm p-2 text-white w-full rounded-[6px] mt-1 bg-[#9E9E9E]">Số người bình chọn: <strong>${value.vote}</strong></p> 
-        //                     </div>
-        //                 </div>
-        //             </div> <div class="popupInfo fixed left-0 top-0 h-screen w-full bg-black/40 z-20 items-center p-[15px]"
-        //     style="display: none">
-        //     <div class="w-full bg-white rounded-lg py-[28px] px-[20px] overflow-auto h-full">
-        //         <img class="mx-auto" src="${value.avatar}" alt="">
-        //         <h1 class="mt-4 text-base font-[600] text-start">
-        //             Tên: ${value.name}
-        //         </h1>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             SBD: ${value.sbd}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Quê Quán: ${value.address}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Phòng Ban: ${value.department}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Chiều Cao: ${value.height}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Sở Thích: ${value.hobby}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Tiết Mục: ${value.set}
-        //         </p>
-        //         <button type="button" class="bg-[#3DBDFF] rounded-[8px] py-[9px] mt-5 w-full closeAlert">
-        //             <p class="text-white font-[700] text-base text-center">Quay lại bình chọn</p>
-        //         </button>
-        //     </div>
-        // </div>`
-            //                 );
-            //             });
-            //         }
-            //         if (snapshot.val().status == 1) {
-            //             if (localStorage.getItem('vote') == 'true') {
-            //                 $.each(sortOptions, function(key, value) {
-            //                     $('.optionContainer').append(
-            //                         `<div data-key="${key}" class="card p-[1px] rounded-[8px] overflow-hidden"
-        //                 style="background: linear-gradient(10deg, #F6F6F6, #F8BB45,#BB8722,#FFFFFF,#FEFAF1);">
-        //                 <div class="flex items-center gap-2 bg-black p-[10px] rounded-[8px]">
-        //                     <img class="object-cover rounded-[8px] object-square w-[80px]"
-        //                         src="${value.avatar}" alt="">
-        //                     <div class="flex-1">
-        //                         <h1 class="text-base font-[700] text-white">${value.name}</h1>
-        //                         <p class="font-[500] text-sm text-white">SBD: ${value.sbd}</p>
-        //                         <p class="text-sm p-2 text-white w-full rounded-[6px] mt-1 bg-[#9E9E9E]">Số người bình chọn: <strong>${value.vote}</strong></p> 
-        //                     </div>
-        //                 </div>
-        //             </div> <div class="popupInfo fixed left-0 top-0 h-screen w-full bg-black/40 z-20 items-center p-[15px]"
-        //     style="display: none">
-        //     <div class="w-full bg-white rounded-lg py-[28px] px-[20px] overflow-auto h-full">
-        //         <img class="mx-auto" src="${value.avatar}" alt="">
-        //         <h1 class="mt-4 text-base font-[600] text-start">
-        //             Tên: ${value.name}
-        //         </h1>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             SBD: ${value.sbd}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Quê Quán: ${value.address}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Phòng Ban: ${value.department}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Chiều Cao: ${value.height}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Sở Thích: ${value.hobby}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Tiết Mục: ${value.set}
-        //         </p>
-        //         <button type="button" class="bg-[#3DBDFF] rounded-[8px] py-[9px] mt-5 w-full closeAlert">
-        //             <p class="text-white font-[700] text-base text-center">Quay lại bình chọn</p>
-        //         </button>
-        //     </div>
-        // </div>`
-            //                     );
-            //                 });
-            //             }
-            //             if (localStorage.getItem('vote') != 'true') {
-            //                 $.each(sortOptions, function(key, value) {
-            //                     $('.optionContainer').append(
-            //                         `                <div data-key="${key}" class="card p-[1px] rounded-[8px] overflow-hidden"
-        //                 style="background: linear-gradient(10deg, #F6F6F6, #F8BB45,#BB8722,#FFFFFF,#FEFAF1);">
-        //                 <div class="flex items-center gap-2 bg-black p-[10px] rounded-[8px]">
-        //                     <img class="object-cover rounded-[8px] w-[80px] h-[80px]"
-        //                         src="${value.avatar}" alt="">
-        //                     <div>
-        //                         <h1 class="text-base font-[700] text-white">${value.name}</h1>
-        //                         <p class="font-[500] text-sm text-white">SBD: ${value.sbd}</p>
-        //                     </div>
-        //                     <input type="hidden" class="voteInput" name="vote[]">
-        //                     <div class="ml-auto w-[30px] h-[30px] mr-3 cursor-pointer">
-        //                         <img class="object-contain w-full h-full addVote"
-        //                         src="{{ asset('theme/frontend/untick.svg') }}" alt="">
-        //                         <img class="object-contain w-full h-full removeVote" style="display:none"
-        //                         src="{{ asset('theme/frontend/tick.svg') }}" alt="">
-        //                     </div>
-        //                 </div>
-        //             </div>    <div class="popupInfo fixed left-0 top-0 h-screen w-full bg-black/40 z-20 items-center p-[15px]"
-        //     style="display: none">
-        //     <div class="w-full bg-white rounded-lg py-[28px] px-[20px] overflow-auto h-full">
-        //         <img class="mx-auto" src="${value.avatar}" alt="">
-        //         <h1 class="mt-4 text-base font-[600] text-start">
-        //             Tên: ${value.name}
-        //         </h1>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             SBD: ${value.sbd}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Quê Quán: ${value.address}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Phòng Ban: ${value.department}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Chiều Cao: ${value.height}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Sở Thích: ${value.hobby}
-        //         </p>
-        //         <p class="mt-4 text-sm font-[500] text-start">
-        //             Tiết Mục: ${value.set}
-        //         </p>
-        //         <button type="button" class="bg-[#3DBDFF] rounded-[8px] py-[9px] mt-5 w-full closeAlert">
-        //             <p class="text-white font-[700] text-base text-center">Quay lại bình chọn</p>
-        //         </button>
-        //     </div>
-        // </div>`
-            //                     );
-            //                 });
-            //             }
-            //         }
         });
         $(document).on('click', '.addVote', function(e) {
             e.stopPropagation()
